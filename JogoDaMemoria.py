@@ -1,5 +1,5 @@
 from colorama import Fore
-from random import choice
+from random import choice, randrange
 from time import sleep
 from os import system
 
@@ -14,17 +14,28 @@ class JogoDaMemoria:
         self.count_sym = {s:0 for s in self.symbols}
         self.len_symbols = len(self.symbols)
         self.pares = 2
-        I, J = self.pares*2, self.len_symbols
-        self.tabuleiro = [[Sym(self.random_sym()) for j in range(J)] for i in range(I) ]
+        self.I, self.J = self.pares*2, self.len_symbols
+        self.tabuleiro = [[Sym(self.random_sym()) for j in range(self.J)] for i in range(self.I) ]
+
+        self.selecionar = []
+
+        for i in range(self.I):
+            for j in range(self.J):
+                self.selecionar.append((i, j))
+                
 
     @staticmethod
-    def valid_int_input(text = ''):
+    def valid_int_input(text = '', r = None):
         while True:
             try:
                 inp = int(input(text))
             except ValueError:
                 continue
-            return inp
+            if r:
+                if r[0] <= inp <= r[1]:
+                    return inp
+            else:
+                return inp
 
     @staticmethod
     def clear():
@@ -44,7 +55,29 @@ class JogoDaMemoria:
         if n_base:
             return f"{n_base}{''.join(restos)}"
         else:
-            return f"{''.join(restos)}"
+            return f"{''.join(restos)}" 
+        
+
+    def embaralhar(self):
+        matriz = self.tabuleiro
+        I, J = len(matriz), len(matriz[0])
+        pos = []
+        for i in range(I):
+            for j in range(J):
+                while True:
+                    pi, pj = randrange(0, I), randrange(0, J)
+                    if (i, j) != (pi, pj) not in pos:
+                        pos.append((pi, pj))
+                        break
+        
+        length = len(pos)
+        for n in range(length-1):
+            i, j = pos[n][0], pos[n][1]
+            pi, pj = pos[n+1][0], pos[n+1][1]
+            
+            aux = matriz[i][j]
+            matriz[i][j] = matriz[pi][pj]
+            matriz[pi][pj] = aux
 
     def menu(self):
         titulo = f"""{Fore.GREEN}
@@ -62,14 +95,10 @@ class JogoDaMemoria:
     def random_sym(self):
         while True:
             sym = choice(self.symbols)
-            if self.count_sym[sym] < self.pares * 2:
+            sleep(ord(sym)/1000)
+            if self.count_sym[sym] < self.I:
                 self.count_sym[sym] += 1
                 return sym
-    
-    def selecionar(self, coordenada):
-        converted = self.base_conversor(coordenada-1, self.len_symbols).zfill(2)
-        i, j = int(converted[0]), int(converted[1])
-        return i, j
 
     def ocult_syms(self, pos_syms):
         for i, j in pos_syms:
@@ -120,6 +149,7 @@ class JogoDaMemoria:
         pos_syms = []
         errou = False
         acertou = False
+        self.embaralhar()
         while True:
             self.clear()
 
@@ -152,9 +182,13 @@ class JogoDaMemoria:
                     break
             
    
-            coord = self.valid_int_input(f"{Fore.YELLOW}Selecione {Fore.LIGHTBLACK_EX}(Ex: 3){Fore.WHITE}: {Fore.YELLOW}")
+            coord = self.valid_int_input(
+                f"{Fore.YELLOW}Selecione {Fore.LIGHTBLACK_EX}(Ex: 3){Fore.WHITE}: {Fore.YELLOW}",
+                (0, len(self.selecionar)))
             
-            i, j = self.selecionar(coord)
+
+            i, j = self.selecionar[coord-1]
+
             if not self.tabuleiro[i][j].achou:
                 if (i, j) not in pos_syms:
                     pos_syms.append((i, j))
@@ -197,9 +231,10 @@ class Sym(JogoDaMemoria):
 
 if __name__ == "__main__":
     try:
+     
         memoria = JogoDaMemoria()
-        memoria.run()
-        input(Fore.LIGHTCYAN_EX + "\n\n\nAperte qualquer tecla para sair")
+        memoria.run()       
+        input("\n\nAperte qualquer tecla para sair: ")
     except:
         print(Fore.RESET)
  
