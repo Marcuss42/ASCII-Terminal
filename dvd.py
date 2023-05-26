@@ -15,9 +15,15 @@ def main():
     vi, vj = 1, 2
     i, j = 1, 4
 
-    cor_dvd = Fore.BLUE
-
     while True:
+        if i+vi >= I or i <= 0:
+            vi = -vi
+            cor_dvd = getattr(Fore,choice(COLORS))
+
+        if j+vj >= J or j <= 0:
+            vj = -vj
+            cor_dvd = getattr(Fore,choice(COLORS))
+            
         tela[i][j] = cor_dvd + DVD + COR_TELA
     
         print(COR_TELA + '█' * (2+J*SIZE))
@@ -28,14 +34,7 @@ def main():
         tela[i][j] = ' ' * SIZE
         i += vi
         j += vj
-
-        if i+vi >= I or i <= 0:
-            vi = -vi
-            cor_dvd = getattr(Fore,choice(COLORS))
-        if j+vj >= J or j <= 0:
-            vj = -vj
-            cor_dvd = getattr(Fore,choice(COLORS))
-
+        
         sleep(.5)
         system('cls || clear')
 
