@@ -39,24 +39,7 @@ class JogoDaMemoria:
 
     @staticmethod
     def clear():
-        system("cls || clear")
-
-    @staticmethod
-    def base_conversor(num, base):
-        if num == 0:
-            return "0"
-
-        restos = []
-        while num >= 1:
-            restos.insert(0, str(num % base))
-            num = num//base
-        n_base = num % base
-
-        if n_base:
-            return f"{n_base}{''.join(restos)}"
-        else:
-            return f"{''.join(restos)}" 
-        
+        system("cls || clear")   
 
     def embaralhar(self):
         matriz = self.tabuleiro
