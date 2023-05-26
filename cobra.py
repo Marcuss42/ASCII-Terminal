@@ -42,27 +42,27 @@ def draw_cobra(func):
 
 @draw_cobra
 def direita():
-    if COBRA[-1][1]+1 == TABLE_J or COBRA[-1][1]+1 in COBRA: return COBRA
-    COBRA.append([COBRA[-1][0], COBRA[-1][1] +1])
-    del COBRA[0]
+    if COBRA[-1][1]+1 != TABLE_J and COBRA[-1][1]+1 not in COBRA:
+        COBRA.append([COBRA[-1][0], COBRA[-1][1] +1])
+        del COBRA[0]
 
 @draw_cobra
 def esquerda():
-    if COBRA[-1][1] == 0 or COBRA[-1][1]-1 in COBRA: return COBRA
-    COBRA.append([COBRA[-1][0], COBRA[-1][1] -1])
-    del COBRA[0]
+    if COBRA[-1][1] != 0 and COBRA[-1][1]-1 not in COBRA:
+        COBRA.append([COBRA[-1][0], COBRA[-1][1] -1])
+        del COBRA[0]
 
 @draw_cobra
 def cima():
-    if COBRA[-1][0] == 0 or COBRA[-1][0]-1 in COBRA: return COBRA
-    COBRA.append([COBRA[-1][0] -1, COBRA[-1][1]])
-    del COBRA[0]
+    if COBRA[-1][0] != 0 and COBRA[-1][0]-1 not in COBRA:
+        COBRA.append([COBRA[-1][0] -1, COBRA[-1][1]])
+        del COBRA[0]
    
 @draw_cobra
 def baixo():
-    if COBRA[-1][0]+1 == TABLE_I or COBRA[-1][0]+1 in COBRA: return COBRA
-    COBRA.append([COBRA[-1][0] +1, COBRA[-1][1]])
-    del COBRA[0]
+    if COBRA[-1][0]+1 != TABLE_I and COBRA[-1][0]+1 not in COBRA:
+        COBRA.append([COBRA[-1][0] +1, COBRA[-1][1]])
+        del COBRA[0]
 
 def main():
     
@@ -77,11 +77,13 @@ def main():
     tab()
     
     for mov in movs:
-        try:
-            for _ in range(mov[1]):
-                mov[0]()
-        except:
-            mov()
+        if isinstance(mov, tuple):
+            mv, qtd = mov
+        else:
+            mv, qtd = mov, 1
+        for _ in range(qtd):
+            mv()
+        
 
 if __name__ == "__main__":
     main()
