@@ -1,3 +1,4 @@
+
 from colorama import Fore
 from random import choice, randrange
 from string import ascii_letters as alfabeto
@@ -5,8 +6,11 @@ from time import sleep
 from os import system
 from keyboard import is_pressed
 
-class Dvl:
-    def __init__(self, I=10, J=7):
+def todos_valores_iguais(lista):
+    return len(set(lista)) == 1
+
+class DesvieDasLetras:
+    def __init__(self, I=20, J=7):
         self.I, self.J = I, J
 
         self.jogador = Jogador(5, f"{Fore.GREEN}0", (I-1, J//2))
@@ -16,6 +20,8 @@ class Dvl:
         self.VELOCIDADE_JOGADOR = 1
         self.FREQUENCIA_OBSTACULO = 3
         self.contador_obstaculo = 0
+
+        self.posicoes_jogador = [] 
 
         self.score = 0
 
@@ -36,6 +42,17 @@ class Dvl:
 
     def gerar_obstaculo(self):
         obstaculo = randrange(0, self.J)
+
+        self.posicoes_jogador.append(self.jogador.y)
+        qtd_posicoes = len(self.posicoes_jogador)
+
+        if todos_valores_iguais(self.posicoes_jogador) and qtd_posicoes == 3:
+            self.posicoes_jogador.clear()
+            obstaculo = self.jogador.y
+
+        elif qtd_posicoes == 3:
+            self.posicoes_jogador.clear()
+        
         self.mapa[0][obstaculo] = f"{Fore.RED}{choice(alfabeto)}"
 
     def update(self):
@@ -44,11 +61,11 @@ class Dvl:
     def mover_jogador(self, direcao):
         jg = self.jogador
         if direcao == 'd':
-            jg.y += self.VELOCIDADE_JOGADOR
+            jg.x += self.VELOCIDADE_JOGADOR
         elif direcao == 'a':
-            jg.y -= self.VELOCIDADE_JOGADOR
+            jg.x -= self.VELOCIDADE_JOGADOR
 
-        jg.y = max(0, min(jg.y, self.J-1))
+        jg.x = max(0, min(jg.x, self.J-1))
 
     def verificar_teclas_pressionadas(self):
         if is_pressed('d'):
@@ -57,7 +74,7 @@ class Dvl:
             self.mover_jogador('a')
 
     def verificar_colisao(self):
-        return self.mapa[self.jogador.x-1][int(self.jogador.y)] != self.tela_fundo
+        return self.mapa[self.jogador.y-1][int(self.jogador.x)] != self.tela_fundo
     
     def verificar_morte(self):
         return self.jogador.vida == 0
@@ -68,10 +85,11 @@ class Dvl:
         while True:
             self.contador_obstaculo += 1
             self.score += 10
+            
             if self.contador_obstaculo % self.FREQUENCIA_OBSTACULO == 0:
                 self.gerar_obstaculo()
 
-            self.mapa[jg.x][int(jg.y)] = f"{Fore.GREEN}{jg}"
+            self.mapa[jg.y][int(jg.x)] = f"{Fore.GREEN}{jg}"
            
             self.mostrar_mapa()
 
@@ -84,10 +102,11 @@ class Dvl:
                     print(f"{Fore.RED}\nMORREU!{Fore.RESET}")
                     break
           
-            self.mapa[jg.x] = [self.tela_fundo] * self.J
+            self.mapa[jg.y] = [self.tela_fundo] * self.J
 
             self.mover_obstaculos()
-            sleep(0.05)
+
+            sleep(max(0, .1 - int(self.score/500)/200))
             self.update()
 
 class Jogador:
@@ -95,15 +114,15 @@ class Jogador:
         self.vida = vida
         self.c = c
         self.pos = pos
-        self.x = pos[0]
-        self.y = pos[1]
+        self.y = pos[0]
+        self.x = pos[1]
 
     def __str__(self):
         return self.c
 
 if __name__ == "__main__":
     try:
-        dlv = Dvl(14)
+        dlv = DesvieDasLetras(20,20)
         dlv.main()
     except Exception as e:
         print(Fore.RESET, e)
