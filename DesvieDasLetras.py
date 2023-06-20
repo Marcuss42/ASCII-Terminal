@@ -1,4 +1,3 @@
-
 from colorama import Fore
 from random import choice, randrange
 from string import ascii_letters as alfabeto
@@ -10,10 +9,10 @@ def todos_valores_iguais(lista):
     return len(set(lista)) == 1
 
 class DesvieDasLetras:
-    def __init__(self, I=20, J=7):
+    def __init__(self, I=20, J=10):
         self.I, self.J = I, J
 
-        self.jogador = Jogador(5, f"{Fore.GREEN}0", (I-1, J//2))
+        self.jogador = Jogador(3, f"{Fore.GREEN}0", (I-1, J//2))
         self.tela_fundo = " "
         self.mapa = [[self.tela_fundo for _ in range(J)] for _ in range(I)]
 
@@ -50,7 +49,7 @@ class DesvieDasLetras:
             self.posicoes_jogador.clear()
             obstaculo = self.jogador.y
 
-        elif qtd_posicoes == 3:
+        if qtd_posicoes == 3:
             self.posicoes_jogador.clear()
         
         self.mapa[0][obstaculo] = f"{Fore.RED}{choice(alfabeto)}"
