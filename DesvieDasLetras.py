@@ -121,7 +121,7 @@ class Jogador:
 
 if __name__ == "__main__":
     try:
-        dlv = DesvieDasLetras(20,20)
-        dlv.main()
+        game = DesvieDasLetras(20,20)
+        game.main()
     except Exception as e:
         print(Fore.RESET, e)
