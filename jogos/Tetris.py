@@ -1,3 +1,5 @@
+# Reference: https://github.com/ravi-ojha/Terminal-Tetris/blob/master/play_tetris.py
+
 import os
 import random
 from colorama import Fore, Style
@@ -5,9 +7,7 @@ from copy import deepcopy
 from keyboard import is_pressed
 from time import sleep, time
 
-# DECLARE ALL THE CONSTANTS
 BOARD_SIZE = 30
-# Extra two are for the walls, playing area will have size as BOARD_SIZE
 EFF_BOARD_SIZE = BOARD_SIZE + 2
 
 # Delayed Auto Shift
@@ -69,7 +69,6 @@ def print_board(board, pieces: (tuple, ...)):
             for j in range(curr_piece_size_y):
                 board_copy[piece_pos[0]+i][piece_pos[1]+j] = curr_piece[i][j] | board[piece_pos[0]+i][piece_pos[1]+j]
 
-    # Print the board to STDOUT
     for i in range(EFF_BOARD_SIZE):
         for j in range(EFF_BOARD_SIZE):
             if board_copy[i][j] == 1:
@@ -80,7 +79,6 @@ def print_board(board, pieces: (tuple, ...)):
                 print(f"{GHOST_COLOR}{PIECE_CHR}", end='')
             else:
                 print(FILL_CHR, end='')
-            #print(board_copy[i][j], end='')
         print('')
 
 
@@ -92,9 +90,6 @@ def init_board():
         board[EFF_BOARD_SIZE-1][i] = 1
         board[i][EFF_BOARD_SIZE-1] = 1
         board[0][i] = 1
-    # board[EFF_BOARD_SIZE-2] = [ board[EFF_BOARD_SIZE-2][0] ] + \
-    #                             [y%6+2 for y in range(EFF_BOARD_SIZE-2)] + \
-    #                           [ board[EFF_BOARD_SIZE-2][-1] ]
     return board
 
 
@@ -107,21 +102,17 @@ def get_random_position(curr_piece):
     curr_piece_size = len(curr_piece)
 
     i = 1
-    # This y refers to columns, columns go along x-axis
     j = random.randrange(1, EFF_BOARD_SIZE-curr_piece_size-1)
     return [i, j]
 
 
 def is_game_over(board, curr_piece, piece_pos):
-    # If the piece cannot move down and the position is still the first row
-    # of the board then the game has ended
     if not can_move_down(board, curr_piece, piece_pos) and piece_pos[0] == 1:
         return True
     return False
 
 
 def get_left_move(piece_pos, unit = 1):
-    # Shift the piece left by 1 unit
     new_piece_pos = [piece_pos[0], piece_pos[1] - unit]
     return new_piece_pos
 
@@ -233,7 +224,6 @@ def ghost_piece(board, curr_piece, piece_pos):
     return curr_copy, hard_drop(board, curr_piece, piece_pos)
 
 def play_game():
-    # Initialize the game board, piece and piece position
     board = init_board()
     curr_piece = get_random_piece()
     piece_pos = get_random_position(curr_piece)
@@ -292,7 +282,6 @@ def play_game():
         
         curr_ghost, ghost_pos = ghost_piece(board, curr_piece, piece_pos)
 
-        # Redraw board
         os.system('cls')
         print_board(
             board, 
