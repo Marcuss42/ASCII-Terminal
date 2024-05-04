@@ -299,3 +299,4 @@ if __name__ == "__main__":
         play_game()
     except (KeyboardInterrupt) as e:
         print(Fore.RESET, Style.RESET_ALL, e)
+    print(Fore.RESET, Style.RESET_ALL)
